@@ -231,13 +231,13 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     <section id="methodSec">
       <header><h2>How scoring works</h2></header>
       <div class="method">
-        <p>Each region's total is its membership count. The bar shows how far up the ladder those members go: the light bar is everyone attending at least the entry level, the middle bar the middle tier or higher, the bright bar the top tier. The engagement score averages those three shares, so a region where every member reaches the top tier scores 100.</p>
+        <p>Each region's total is its membership count. The bar shows how far up the ladder those members go: the light bar is everyone attending at least the entry level, the middle bar the middle tier or higher, the bright bar the top tier. The engagement score gives each member points for the highest level they reach: 5 for the top tier, 3 for the middle tier and 1 for the entry level. A region's score is the points it earns out of the maximum (every member at the top tier), from 0 to 100.</p>
         <div class="tblwrap"><table>
-          <thead><tr><th>Level</th><th>International sheet</th><th>North America sheet</th></tr></thead>
+          <thead><tr><th>Level</th><th>International sheet</th><th>North America sheet</th><th>Points</th></tr></thead>
           <tbody>
-            <tr><td>Top</td><td>Highly Engaged</td><td>Core</td></tr>
-            <tr><td>Middle</td><td>Involved</td><td>Very Involved</td></tr>
-            <tr><td>Entry</td><td>Connect</td><td>Involved (1+ events)</td></tr>
+            <tr><td>Top</td><td>Highly Engaged</td><td>Core</td><td>5</td></tr>
+            <tr><td>Middle</td><td>Involved</td><td>Very Involved</td><td>3</td></tr>
+            <tr><td>Entry</td><td>Connect</td><td>Involved (1+ events)</td><td>1</td></tr>
           </tbody>
         </table></div>
         <p>International totals come from the TOTAL Involvement column; members who aren't Highly Engaged, Involved or Connected (such as paid members not attending events) count as not attending. North America totals come from the Membership tab, and uninvolved members count as not attending.</p>
@@ -263,7 +263,8 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     // not in a tier) is a member who isn't attending.
     let r3, r2, r1;
     if (r.cumulative) { r3 = e; r2 = i; r1 = c; } else { r3 = e; r2 = e + i; r1 = e + i + c; }
-    const score = total ? Math.round(((r1 + r2 + r3) / (3 * total)) * 1000) / 10 : 0;
+    // Points: top tier 5, middle tier 3, entry 1 -> each level reached adds 1, +2, +2; max 5 per member.
+    const score = total ? Math.round(((1 * r1 + 2 * r2 + 2 * r3) / (5 * total)) * 1000) / 10 : 0;
     const p = (n) => (total ? (n / total) * 100 : 0);
     return { ...r, paid, engaged: e, involved: i, connected: c, total, r1, r2, r3, top: r3, score, topPct: p(r3), p1: p(r1), p2: p(r2), p3: p(r3), active: r1 + (r.cumulative ? 0 : 0) };
   }
