@@ -21,16 +21,6 @@
   --font-wide:"Gamay Wide","Archivo",Arial,sans-serif;
   --font-body:"Graphik","Hanken Grotesk",Helvetica,Arial,sans-serif;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --surface:#0a023c; --surface-tint:#140a5c; --line:#2a2080; --ink:#ffffff; --ink-muted:#c3cbf2; --headline:#ffffff;
-  --action:#00d7eb; --on-action:#000000; --band:#1a03b5; --band-ink:#ffffff; --band-muted:#d9e1ff;
-  --tier-paid:#d9e1ff; --tier-engaged:#ff4f80; --tier-involved:#7c6bff; --tier-connected:#00d7eb;
-  --up:#8be04e; --down:#ff6b93; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --surface:#0a023c; --surface-tint:#140a5c; --line:#2a2080; --ink:#ffffff; --ink-muted:#c3cbf2; --headline:#ffffff;
-  --action:#00d7eb; --on-action:#000000; --band:#1a03b5; --band-ink:#ffffff; --band-muted:#d9e1ff;
-  --tier-paid:#d9e1ff; --tier-engaged:#ff4f80; --tier-involved:#7c6bff; --tier-connected:#00d7eb;
-  --up:#8be04e; --down:#ff6b93; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{background:var(--surface);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55}
@@ -133,6 +123,13 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
 .method table{border-collapse:collapse;font-size:13.5px;margin-top:4px}
 .method th,.method td{border:1px solid var(--line);padding:6px 10px;text-align:left}
 .tblwrap{overflow-x:auto}
+.howto{background:var(--surface-tint);padding:0 18px}
+.howto summary{cursor:pointer;padding:14px 0;font-weight:700;color:var(--headline);list-style:none;display:flex;align-items:center;gap:10px}
+.howto summary::-webkit-details-marker{display:none}
+.howto summary::before{content:"+";display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--action);color:var(--on-action);font-weight:700;line-height:1}
+.howto[open] summary::before{content:"\2212"}
+.howto .method{padding:0 0 18px}
+.method .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:0}
 
 .empty{padding:48px 24px;background:var(--surface-tint);text-align:center;display:grid;gap:10px;justify-items:center}
 .empty svg{width:64px;color:var(--headline)}
@@ -155,7 +152,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
 
 <div class="band">
   <div class="wrap">
-    <div class="brandrow"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="448.08 237.18 216.46 234.08"><g fill="currentColor"><path fill-rule="nonzero" d="M467.66 312.69L457.88 304.31L448.08 312.69L448.08 336.00L457.87 327.63L467.66 336.00L467.66 312.69Z"/><path fill-rule="nonzero" d="M566.08 245.55L556.31 237.18L546.53 245.55L546.51 245.55L546.51 277.29L546.53 277.29L556.31 268.92L566.08 277.29L566.09 277.29L566.09 245.55L566.08 245.55Z"/><path fill-rule="nonzero" d="M578.73 301.55L578.75 301.55L588.53 293.17L598.29 301.54L598.28 275.41L598.26 275.41L588.49 267.03L578.71 275.41L578.69 275.41L578.73 301.55Z"/><path fill-rule="nonzero" d="M533.91 296.33L533.89 296.33L524.12 287.96L514.34 296.33L514.33 296.33L514.33 331.07L514.34 331.07L524.12 322.70L533.89 331.07L533.91 331.07L533.91 296.33Z"/><path fill-rule="nonzero" d="M533.93 261.81L533.91 261.81L524.14 253.43L514.36 261.81L514.34 261.81L514.33 281.30L514.34 281.30L524.12 272.93L533.89 281.30L533.91 281.30L533.93 261.81Z"/><path fill-rule="nonzero" d="M611.90 344.97L621.70 336.60L631.49 344.97L631.49 323.27L621.70 314.89L611.90 323.27L611.90 344.97Z"/><path fill-rule="nonzero" d="M500.75 292.28L490.98 283.90L481.18 292.28L481.18 325.73L490.96 317.35L500.75 325.73L500.75 292.28Z"/><path fill-rule="nonzero" d="M611.90 308.23L621.70 299.86L631.47 308.23L631.48 308.23L631.47 286.53L631.47 286.53L621.70 278.16L611.91 286.53L611.90 308.23Z"/><path fill-rule="nonzero" d="M644.94 364.11L654.43 355.98L664.51 364.42C664.52 363.97 664.53 309.27 664.53 309.27L664.52 309.27L654.75 300.89L644.97 309.27L644.95 309.27C644.95 309.27 644.95 363.75 644.94 364.11Z"/><path fill-rule="nonzero" d="M490.55 354.70L500.79 362.11L500.75 340.76L490.96 332.39L481.17 340.76C481.17 340.76 481.18 363.73 481.18 364.08L490.55 354.70Z"/><path fill-rule="nonzero" d="M556.31 283.95L546.53 292.32L546.52 292.32L546.52 363.87L546.51 363.87C546.51 369.28 550.89 373.66 556.30 373.66C561.71 373.66 566.08 369.29 566.10 363.89L566.10 363.87L566.10 292.32L566.08 292.32L556.31 283.95Z"/><path fill-rule="nonzero" d="M578.69 362.96C578.68 375.31 568.65 385.33 556.29 385.33C543.95 385.33 533.94 375.33 533.91 362.99L533.91 346.10L533.89 346.10L524.12 337.73L514.34 346.10L514.33 346.10L514.32 362.96C514.32 386.43 533.13 405.46 556.32 405.46C579.52 405.46 598.32 386.43 598.32 362.96L598.30 316.57L588.53 308.21L578.75 316.59L578.73 316.59L578.69 362.96Z"/><path fill-rule="nonzero" d="M654.43 371.01L643.22 380.53C635.09 421.10 599.27 451.65 556.32 451.65C507.37 451.65 467.68 411.97 467.67 363.02L467.66 351.04L467.64 351.04L457.87 342.66L448.09 351.04L448.08 351.04L448.08 363.02L448.08 363.03C448.08 422.80 496.53 471.25 556.31 471.25C610.76 471.25 655.81 431.03 663.40 378.69L654.43 371.01Z"/><path fill-rule="nonzero" d="M631.49 360.02L631.47 360.02L621.70 351.63L611.92 360.02L611.90 360.02L611.89 363.01C611.87 393.77 587.01 418.72 556.34 418.72C530.72 418.72 509.15 401.30 502.73 377.63L491.77 369.68L482.81 378.72C490.04 412.68 520.21 438.16 556.33 438.16C597.84 438.16 631.49 404.51 631.49 363.01L631.49 360.02Z"/></g></svg><span class="eyebrow">BBYO Engagement Leaderboard</span></div>
+    <div class="brandrow"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="448.08 237.18 216.46 234.08"><g fill="currentColor"><path fill-rule="nonzero" d="M467.66 312.69L457.88 304.31L448.08 312.69L448.08 336.00L457.87 327.63L467.66 336.00L467.66 312.69Z"/><path fill-rule="nonzero" d="M566.08 245.55L556.31 237.18L546.53 245.55L546.51 245.55L546.51 277.29L546.53 277.29L556.31 268.92L566.08 277.29L566.09 277.29L566.09 245.55L566.08 245.55Z"/><path fill-rule="nonzero" d="M578.73 301.55L578.75 301.55L588.53 293.17L598.29 301.54L598.28 275.41L598.26 275.41L588.49 267.03L578.71 275.41L578.69 275.41L578.73 301.55Z"/><path fill-rule="nonzero" d="M533.91 296.33L533.89 296.33L524.12 287.96L514.34 296.33L514.33 296.33L514.33 331.07L514.34 331.07L524.12 322.70L533.89 331.07L533.91 331.07L533.91 296.33Z"/><path fill-rule="nonzero" d="M533.93 261.81L533.91 261.81L524.14 253.43L514.36 261.81L514.34 261.81L514.33 281.30L514.34 281.30L524.12 272.93L533.89 281.30L533.91 281.30L533.93 261.81Z"/><path fill-rule="nonzero" d="M611.90 344.97L621.70 336.60L631.49 344.97L631.49 323.27L621.70 314.89L611.90 323.27L611.90 344.97Z"/><path fill-rule="nonzero" d="M500.75 292.28L490.98 283.90L481.18 292.28L481.18 325.73L490.96 317.35L500.75 325.73L500.75 292.28Z"/><path fill-rule="nonzero" d="M611.90 308.23L621.70 299.86L631.47 308.23L631.48 308.23L631.47 286.53L631.47 286.53L621.70 278.16L611.91 286.53L611.90 308.23Z"/><path fill-rule="nonzero" d="M644.94 364.11L654.43 355.98L664.51 364.42C664.52 363.97 664.53 309.27 664.53 309.27L664.52 309.27L654.75 300.89L644.97 309.27L644.95 309.27C644.95 309.27 644.95 363.75 644.94 364.11Z"/><path fill-rule="nonzero" d="M490.55 354.70L500.79 362.11L500.75 340.76L490.96 332.39L481.17 340.76C481.17 340.76 481.18 363.73 481.18 364.08L490.55 354.70Z"/><path fill-rule="nonzero" d="M556.31 283.95L546.53 292.32L546.52 292.32L546.52 363.87L546.51 363.87C546.51 369.28 550.89 373.66 556.30 373.66C561.71 373.66 566.08 369.29 566.10 363.89L566.10 363.87L566.10 292.32L566.08 292.32L556.31 283.95Z"/><path fill-rule="nonzero" d="M578.69 362.96C578.68 375.31 568.65 385.33 556.29 385.33C543.95 385.33 533.94 375.33 533.91 362.99L533.91 346.10L533.89 346.10L524.12 337.73L514.34 346.10L514.33 346.10L514.32 362.96C514.32 386.43 533.13 405.46 556.32 405.46C579.52 405.46 598.32 386.43 598.32 362.96L598.30 316.57L588.53 308.21L578.75 316.59L578.73 316.59L578.69 362.96Z"/><path fill-rule="nonzero" d="M654.43 371.01L643.22 380.53C635.09 421.10 599.27 451.65 556.32 451.65C507.37 451.65 467.68 411.97 467.67 363.02L467.66 351.04L467.64 351.04L457.87 342.66L448.09 351.04L448.08 351.04L448.08 363.02L448.08 363.03C448.08 422.80 496.53 471.25 556.31 471.25C610.76 471.25 655.81 431.03 663.40 378.69L654.43 371.01Z"/><path fill-rule="nonzero" d="M631.49 360.02L631.47 360.02L621.70 351.63L611.92 360.02L611.90 360.02L611.89 363.01C611.87 393.77 587.01 418.72 556.34 418.72C530.72 418.72 509.15 401.30 502.73 377.63L491.77 369.68L482.81 378.72C490.04 412.68 520.21 438.16 556.33 438.16C597.84 438.16 631.49 404.51 631.49 363.01L631.49 360.02Z"/></g></svg><span class="eyebrow">BBYO Involvement Leaderboard</span></div>
     <div class="hero">
       <div>
         <h1>Membership <span>Mania</span></h1>
@@ -174,8 +171,8 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     </div>
     <label class="ctl" for="metric">Rank by
       <select id="metric">
-        <option value="score">Engagement score</option>
-        <option value="top">Top-tier share</option>
+        <option value="score">Involvement score</option>
+        <option value="top">Core share</option>
         <option value="total">Most teens</option>
         <option value="delta">Biggest climb</option>
       </select>
@@ -188,10 +185,25 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
 
 <main>
   <div class="wrap" id="app">
+    <details class="howto">
+      <summary>How scoring works</summary>
+      <div class="method">
+        <p>Each region's total is its membership count. Every member earns points for the highest level they reach: <b>3</b> for Core, <b>2</b> for Very Involved, <b>1</b> for Involved, and 0 if they haven't attended. A region's involvement score is the points it earns out of the most it could earn (every member at Core), from 0 to 100.</p>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Level</th><th>North America sheet</th><th>International sheet</th><th>Points</th></tr></thead>
+          <tbody>
+            <tr><td><i class="dot" style="background:var(--tier-engaged)"></i>Core</td><td>Core</td><td>Highly Engaged</td><td>3</td></tr>
+            <tr><td><i class="dot" style="background:var(--tier-involved)"></i>Very Involved</td><td>Very Involved</td><td>Involved</td><td>2</td></tr>
+            <tr><td><i class="dot" style="background:var(--tier-connected)"></i>Involved</td><td>Involved (1+ events)</td><td>Connect</td><td>1</td></tr>
+          </tbody>
+        </table></div>
+        <p>North America totals come from the Membership tab. International totals come from the TOTAL Involvement column, so paid members who haven't come to an event count as not attending. "Biggest climb" compares today's score with the previous refresh.</p>
+      </div>
+    </details>
     <div class="empty" id="empty">
       <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="448.08 237.18 216.46 234.08"><g fill="currentColor"><path fill-rule="nonzero" d="M467.66 312.69L457.88 304.31L448.08 312.69L448.08 336.00L457.87 327.63L467.66 336.00L467.66 312.69Z"/><path fill-rule="nonzero" d="M566.08 245.55L556.31 237.18L546.53 245.55L546.51 245.55L546.51 277.29L546.53 277.29L556.31 268.92L566.08 277.29L566.09 277.29L566.09 245.55L566.08 245.55Z"/><path fill-rule="nonzero" d="M578.73 301.55L578.75 301.55L588.53 293.17L598.29 301.54L598.28 275.41L598.26 275.41L588.49 267.03L578.71 275.41L578.69 275.41L578.73 301.55Z"/><path fill-rule="nonzero" d="M533.91 296.33L533.89 296.33L524.12 287.96L514.34 296.33L514.33 296.33L514.33 331.07L514.34 331.07L524.12 322.70L533.89 331.07L533.91 331.07L533.91 296.33Z"/><path fill-rule="nonzero" d="M533.93 261.81L533.91 261.81L524.14 253.43L514.36 261.81L514.34 261.81L514.33 281.30L514.34 281.30L524.12 272.93L533.89 281.30L533.91 281.30L533.93 261.81Z"/><path fill-rule="nonzero" d="M611.90 344.97L621.70 336.60L631.49 344.97L631.49 323.27L621.70 314.89L611.90 323.27L611.90 344.97Z"/><path fill-rule="nonzero" d="M500.75 292.28L490.98 283.90L481.18 292.28L481.18 325.73L490.96 317.35L500.75 325.73L500.75 292.28Z"/><path fill-rule="nonzero" d="M611.90 308.23L621.70 299.86L631.47 308.23L631.48 308.23L631.47 286.53L631.47 286.53L621.70 278.16L611.91 286.53L611.90 308.23Z"/><path fill-rule="nonzero" d="M644.94 364.11L654.43 355.98L664.51 364.42C664.52 363.97 664.53 309.27 664.53 309.27L664.52 309.27L654.75 300.89L644.97 309.27L644.95 309.27C644.95 309.27 644.95 363.75 644.94 364.11Z"/><path fill-rule="nonzero" d="M490.55 354.70L500.79 362.11L500.75 340.76L490.96 332.39L481.17 340.76C481.17 340.76 481.18 363.73 481.18 364.08L490.55 354.70Z"/><path fill-rule="nonzero" d="M556.31 283.95L546.53 292.32L546.52 292.32L546.52 363.87L546.51 363.87C546.51 369.28 550.89 373.66 556.30 373.66C561.71 373.66 566.08 369.29 566.10 363.89L566.10 363.87L566.10 292.32L566.08 292.32L556.31 283.95Z"/><path fill-rule="nonzero" d="M578.69 362.96C578.68 375.31 568.65 385.33 556.29 385.33C543.95 385.33 533.94 375.33 533.91 362.99L533.91 346.10L533.89 346.10L524.12 337.73L514.34 346.10L514.33 346.10L514.32 362.96C514.32 386.43 533.13 405.46 556.32 405.46C579.52 405.46 598.32 386.43 598.32 362.96L598.30 316.57L588.53 308.21L578.75 316.59L578.73 316.59L578.69 362.96Z"/><path fill-rule="nonzero" d="M654.43 371.01L643.22 380.53C635.09 421.10 599.27 451.65 556.32 451.65C507.37 451.65 467.68 411.97 467.67 363.02L467.66 351.04L467.64 351.04L457.87 342.66L448.09 351.04L448.08 351.04L448.08 363.02L448.08 363.03C448.08 422.80 496.53 471.25 556.31 471.25C610.76 471.25 655.81 431.03 663.40 378.69L654.43 371.01Z"/><path fill-rule="nonzero" d="M631.49 360.02L631.47 360.02L621.70 351.63L611.92 360.02L611.90 360.02L611.89 363.01C611.87 393.77 587.01 418.72 556.34 418.72C530.72 418.72 509.15 401.30 502.73 377.63L491.77 369.68L482.81 378.72C490.04 412.68 520.21 438.16 556.33 438.16C597.84 438.16 631.49 404.51 631.49 363.01L631.49 360.02Z"/></g></svg>
       <h2 id="emptyTitle">Loading the standings</h2>
-      <p id="emptyText">Region totals and engagement tiers load from the daily refresh.</p>
+      <p id="emptyText">Region totals and involvement levels load from the daily refresh.</p>
     </div>
 
     <section id="podiumSec" hidden>
@@ -203,9 +215,9 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
       <header>
         <h2>Full standings</h2>
         <div class="legend">
-          <span><i style="background:var(--tier-engaged)"></i>Top: Highly Engaged / Core</span>
-          <span><i style="background:var(--tier-involved)"></i>Middle: Involved / Very Involved</span>
-          <span><i style="background:var(--tier-connected)"></i>Entry: Connected / Involved</span>
+          <span><i style="background:var(--tier-engaged)"></i>Core</span>
+          <span><i style="background:var(--tier-involved)"></i>Very Involved</span>
+          <span><i style="background:var(--tier-connected)"></i>Involved</span>
           <span><i style="background:var(--surface);border:1px solid var(--line)"></i>Not attending</span>
         </div>
       </header>
@@ -228,22 +240,6 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
       <div class="quiet" id="quiet"></div>
     </section>
 
-    <section id="methodSec">
-      <header><h2>How scoring works</h2></header>
-      <div class="method">
-        <p>Each region's total is its membership count. The bar shows how far up the ladder those members go: the light bar is everyone attending at least the entry level, the middle bar the middle tier or higher, the bright bar the top tier. The engagement score gives each member points for the highest level they reach: 5 for the top tier, 3 for the middle tier and 1 for the entry level. A region's score is the points it earns out of the maximum (every member at the top tier), from 0 to 100.</p>
-        <div class="tblwrap"><table>
-          <thead><tr><th>Level</th><th>International sheet</th><th>North America sheet</th><th>Points</th></tr></thead>
-          <tbody>
-            <tr><td>Top</td><td>Highly Engaged</td><td>Core</td><td>5</td></tr>
-            <tr><td>Middle</td><td>Involved</td><td>Very Involved</td><td>3</td></tr>
-            <tr><td>Entry</td><td>Connect</td><td>Involved (1+ events)</td><td>1</td></tr>
-          </tbody>
-        </table></div>
-        <p>International totals come from the TOTAL Involvement column; members who aren't Highly Engaged, Involved or Connected (such as paid members not attending events) count as not attending. North America totals come from the Membership tab, and uninvolved members count as not attending.</p>
-        <p>"Biggest climb" compares today's score with the previous refresh.</p>
-      </div>
-    </section>
   </div>
 </main>
 
@@ -263,8 +259,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     // not in a tier) is a member who isn't attending.
     let r3, r2, r1;
     if (r.cumulative) { r3 = e; r2 = i; r1 = c; } else { r3 = e; r2 = e + i; r1 = e + i + c; }
-    // Points: top tier 5, middle tier 3, entry 1 -> each level reached adds 1, +2, +2; max 5 per member.
-    const score = total ? Math.round(((1 * r1 + 2 * r2 + 2 * r3) / (5 * total)) * 1000) / 10 : 0;
+    const score = total ? Math.round(((r1 + r2 + r3) / (3 * total)) * 1000) / 10 : 0;
     const p = (n) => (total ? (n / total) * 100 : 0);
     return { ...r, paid, engaged: e, involved: i, connected: c, total, r1, r2, r3, top: r3, score, topPct: p(r3), p1: p(r1), p2: p(r2), p3: p(r3), active: r1 + (r.cumulative ? 0 : 0) };
   }
@@ -287,7 +282,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     total: (a, b) => b.total - a.total || b.score - a.score,
     delta: (a, b) => (b.delta ?? -1e9) - (a.delta ?? -1e9) || b.score - a.score,
   };
-  const metricLabel = { score: 'score', top: '% top tier', total: 'teens', delta: 'pts vs last' };
+  const metricLabel = { score: 'score', top: '% core', total: 'teens', delta: 'pts vs last' };
   function metricVal(r) {
     if (state.metric === 'total') return fmt(r.total);
     if (state.metric === 'top') return Math.round(r.topPct) + '%';
@@ -302,11 +297,11 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   }
   function bar(r) {
     const cl = (v) => Math.min(100, Math.max(0, v));
-    return `<div class="bar ladder" role="img" aria-label="${esc(r.name)}: ${Math.round(r.p1)}% attending, ${Math.round(r.p2)}% middle tier or higher, ${Math.round(r.p3)}% top tier, of ${r.total} members">
+    return `<div class="bar ladder" role="img" aria-label="${esc(r.name)}: ${Math.round(r.p1)}% involved, ${Math.round(r.p2)}% very involved, ${Math.round(r.p3)}% core, of ${r.total} members">
       <span style="width:${cl(r.p1)}%;background:var(--tier-connected)"></span>
       <span style="width:${cl(r.p2)}%;background:var(--tier-involved)"></span>
       <span style="width:${cl(r.p3)}%;background:var(--tier-engaged)"></span></div>
-      <div class="barmeta num">${fmt(r.total)} members · ${Math.round(r.p1)}% attending · ${Math.round(r.p3)}% top tier</div>`;
+      <div class="barmeta num">${fmt(r.total)} members · ${Math.round(r.p1)}% involved · ${Math.round(r.p3)}% core</div>`;
   }
 
   function render() {
@@ -357,11 +352,9 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   function detail(r) {
     const pct = (n) => (r.total ? Math.round((n / r.total) * 100) : 0) + '%';
     const change = r.prevTotal != null ? ` · ${r.total - r.prevTotal >= 0 ? '+' : ''}${r.total - r.prevTotal} members since last refresh` : '';
-    const cells = r.league === 'North America'
-      ? [[r.total, 'total membership'], [r.connected, `involved, 1+ events (${pct(r.connected)})`], [r.involved, `very involved (${pct(r.involved)})`], [r.engaged, `core (${pct(r.engaged)})`], [r.uninvolved ?? r.total - r.connected, `uninvolved (${pct(r.uninvolved ?? r.total - r.connected)})`]]
-      : [[r.total, 'total membership'], [r.engaged, `highly engaged (${pct(r.engaged)})`], [r.involved, `involved (${pct(r.involved)})`], [r.connected, `connected (${pct(r.connected)})`], [Math.max(r.total - r.r1, 0), `not attending (${pct(Math.max(r.total - r.r1, 0))})`]];
+    const cells = [[r.total, 'total membership'], [r.r1, `involved (${pct(r.r1)})`], [r.r2, `very involved (${pct(r.r2)})`], [r.r3, `core (${pct(r.r3)})`], [Math.max(r.total - r.r1, 0), `not attending (${pct(Math.max(r.total - r.r1, 0))})`]];
     return `<div class="detail">${cells.map(([n, l]) => `<div><b class="num">${fmt(n)}</b><span>${l}</span></div>`).join('')}
-      <div><b class="num">${r.score.toFixed(1)}</b><span>engagement score</span></div>
+      <div><b class="num">${r.score.toFixed(1)}</b><span>involvement score</span></div>
       <p class="note">${esc(r.league)} · ${esc(r.hub)}${change}</p></div>`;
   }
 
@@ -377,7 +370,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   function drawVs(list) {
     const A = list.find((r) => r.id === $('vsA').value), B = list.find((r) => r.id === $('vsB').value);
     if (!A || !B) return;
-    const cats = [['Engagement score', (r) => r.score, (v) => v.toFixed(1)], ['Total teens', (r) => r.total, fmt], ['Top tier', (r) => r.top, fmt], ['Top-tier share', (r) => r.topPct, (v) => Math.round(v) + '%'], ['Attending share', (r) => r.p1, (v) => Math.round(v) + '%'], ['Middle tier or higher', (r) => r.p2, (v) => Math.round(v) + '%']];
+    const cats = [['Involvement score', (r) => r.score, (v) => v.toFixed(1)], ['Total teens', (r) => r.total, fmt], ['Core', (r) => r.r3, fmt], ['Core share', (r) => r.p3, (v) => Math.round(v) + '%'], ['Very Involved share', (r) => r.p2, (v) => Math.round(v) + '%'], ['Involved share', (r) => r.p1, (v) => Math.round(v) + '%']];
     let wa = 0, wb = 0;
     const side = (R, O, isA) => `<div class="bignum num">${R.score.toFixed(0)}</div><dl>${cats.map(([k, f, show]) => {
       const win = f(R) > f(O); if (win) isA ? wa++ : wb++;
