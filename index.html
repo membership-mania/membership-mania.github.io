@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>BBYO Membership Mania</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Hanken+Grotesk:wght@400;500;600;700;900&display=swap">
+<style>
+/* Layout: a Centennial Blue scoreboard band on top, then a podium, then the full league table; panels square, badges round. */
+:root{
+  --black:#000000; --white:#ffffff;
+  --centennial:#1a03b5; --lox:#e42158; --jaffa:#f8450a; --sunrise:#f8f90a; --pistachio:#6bbd00; --seltzer:#00d7eb;
+  --dark-centennial:#0a023c; --light-centennial:#d9e1ff; --light-gray:#e6e6e6; --dark-gray:#666666;
+  --surface:#ffffff; --surface-tint:#d9e1ff; --line:#c9d2f5; --ink:#000000; --ink-muted:#555a6e; --headline:#1a03b5;
+  --action:#1a03b5; --on-action:#ffffff; --band:#1a03b5; --band-ink:#ffffff; --band-muted:#d9e1ff;
+  --tier-paid:#0a023c; --tier-engaged:#e42158; --tier-involved:#1a03b5; --tier-connected:#00d7eb;
+  --up:#2e7d00; --down:#c41a4a;
+  --font-display:"Gamay Narrow","Archivo","Arial Narrow",sans-serif;
+  --font-wide:"Gamay Wide","Archivo",Arial,sans-serif;
+  --font-body:"Graphik","Hanken Grotesk",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --surface:#0a023c; --surface-tint:#140a5c; --line:#2a2080; --ink:#ffffff; --ink-muted:#c3cbf2; --headline:#ffffff;
+  --action:#00d7eb; --on-action:#000000; --band:#1a03b5; --band-ink:#ffffff; --band-muted:#d9e1ff;
+  --tier-paid:#d9e1ff; --tier-engaged:#ff4f80; --tier-involved:#7c6bff; --tier-connected:#00d7eb;
+  --up:#8be04e; --down:#ff6b93; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --surface:#0a023c; --surface-tint:#140a5c; --line:#2a2080; --ink:#ffffff; --ink-muted:#c3cbf2; --headline:#ffffff;
+  --action:#00d7eb; --on-action:#000000; --band:#1a03b5; --band-ink:#ffffff; --band-muted:#d9e1ff;
+  --tier-paid:#d9e1ff; --tier-engaged:#ff4f80; --tier-involved:#7c6bff; --tier-connected:#00d7eb;
+  --up:#8be04e; --down:#ff6b93; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--surface);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--font-display);font-stretch:75%;font-weight:900;line-height:.95;margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--font-wide);font-stretch:125%;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:500}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--action);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+/* Scoreboard band */
+.band{background:var(--band);color:var(--band-ink);position:relative;overflow:hidden}
+.band .wrap{padding-block:28px 32px;position:relative;z-index:1;display:grid;gap:22px}
+.brandrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brandrow svg{width:34px;height:auto;color:var(--white)}
+.brandrow .eyebrow{color:var(--band-muted)}
+.hero{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
+.hero h1{font-size:clamp(52px,9vw,104px);color:var(--white)}
+.hero h1 span{color:var(--sunrise)}
+.hero p{margin:10px 0 0;max-width:56ch;color:var(--band-muted)}
+.updated{text-align:right;color:var(--band-muted);font-size:14px}
+.updated b{display:block;color:var(--white);font-family:var(--font-display);font-stretch:75%;font-weight:800;font-size:26px;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;background:#ffffff33}
+.stat{background:var(--band);padding:14px 16px}
+.stat b{display:block;font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:40px;line-height:1}
+.stat span{font-size:13px;color:var(--band-muted)}
+
+/* Controls */
+.controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.controls .wrap{padding-block:12px;display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center}
+.seg{display:flex;border:2px solid var(--headline);border-radius:6px;overflow:hidden}
+.seg button{background:none;border:0;padding:7px 14px;font-weight:600;font-size:14px;cursor:pointer;color:var(--headline)}
+.seg button[aria-pressed="true"]{background:var(--action);color:var(--on-action)}
+.ctl{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-muted)}
+.ctl select{background:var(--surface);border:2px solid var(--line);border-radius:6px;padding:6px 10px;color:var(--ink);max-width:100%}
+
+main .wrap{display:grid;gap:56px;padding-block:36px 64px}
+section > header{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+section > header h2{font-size:clamp(34px,5vw,52px);color:var(--headline)}
+section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px}
+
+/* Podium */
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:12px}
+.step{position:relative;padding:18px 18px 20px;color:#000;display:grid;gap:6px;min-width:0;transition:transform .25s}
+.step:hover{transform:translateY(-4px)}
+.step.p1{background:var(--sunrise);min-height:300px;order:2}
+.step.p2{background:var(--seltzer);min-height:250px;order:1}
+.step.p3{background:var(--jaffa);min-height:215px;order:3}
+.step .place{font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:76px;line-height:.8}
+.step .rname{font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:clamp(24px,3vw,34px);line-height:1;overflow-wrap:anywhere}
+.step .rhub{font-size:13px;font-weight:600;opacity:.8}
+.step .big{margin-top:auto;font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:44px;line-height:1}
+.step .big small{font-family:var(--font-body);font-size:13px;font-weight:600;margin-left:4px}
+.step svg.crown{position:absolute;right:14px;top:14px;width:44px;color:#000;opacity:.9}
+
+/* Legend + table */
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.board{display:grid;gap:6px}
+.row{display:grid;grid-template-columns:52px minmax(0,1.4fr) minmax(0,2fr) 92px 70px;gap:14px;align-items:center;padding:12px 14px;background:var(--surface-tint);border:0;width:100%;text-align:left;cursor:pointer;color:var(--ink)}
+.row:hover{outline:2px solid var(--line)}
+.row .rk{font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:30px;line-height:1;color:var(--headline)}
+.row .nm b{display:block;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+.row .nm span{font-size:12.5px;color:var(--ink-muted)}
+.bar{display:flex;height:16px;background:var(--surface);overflow:hidden}
+.bar span{display:block;height:100%;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.bar.ladder{position:relative;display:block}
+.bar.ladder span{position:absolute;left:0;top:0}
+.barmeta{font-size:12px;color:var(--ink-muted);margin-top:4px}
+.row .sc{font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:30px;line-height:1;text-align:right}
+.row .sc small{display:block;font-family:var(--font-body);font-size:11px;font-weight:600;color:var(--ink-muted);letter-spacing:.04em}
+.delta{font-size:13px;font-weight:700;text-align:right}
+.delta.up{color:var(--up)} .delta.down{color:var(--down)} .delta.flat{color:var(--ink-muted)}
+.detail{background:var(--surface);border:2px solid var(--surface-tint);border-top:0;padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:-6px}
+.detail div b{display:block;font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:28px;line-height:1}
+.detail div span{font-size:12.5px;color:var(--ink-muted)}
+.detail .note{grid-column:1/-1;font-size:13px;color:var(--ink-muted);margin:0}
+.more{justify-self:start;background:none;border:2px solid var(--headline);color:var(--headline);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer}
+
+/* Head to head */
+.vs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:0;align-items:stretch}
+.side{padding:20px;display:grid;gap:14px;min-width:0}
+.side.a{background:var(--lox);color:#fff}
+.side.b{background:var(--centennial);color:#fff}
+.side select{background:#ffffff22;border:2px solid #ffffff88;color:#fff;border-radius:6px;padding:8px 10px;font-weight:600;width:100%}
+.side select option{color:#000}
+.side .bignum{font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:64px;line-height:.9}
+.side dl{margin:0;display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:14px}
+.side dd{margin:0;font-weight:700;text-align:right}
+.side dd.win::before{content:"▲ ";font-size:10px;vertical-align:2px}
+.vsmid{display:grid;place-items:center;background:var(--sunrise);color:#000;padding:0 14px;font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:40px}
+.verdict{margin:12px 0 0;font-weight:600;color:var(--headline)}
+
+
+.quiet{display:flex;flex-wrap:wrap;gap:8px}
+.quiet span{border:1px solid var(--line);padding:4px 10px;border-radius:999px;font-size:13px;color:var(--ink-muted)}
+.method{font-size:14px;color:var(--ink-muted);display:grid;gap:8px;max-width:75ch}
+.method p{margin:0}
+.method table{border-collapse:collapse;font-size:13.5px;margin-top:4px}
+.method th,.method td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+.tblwrap{overflow-x:auto}
+
+.empty{padding:48px 24px;background:var(--surface-tint);text-align:center;display:grid;gap:10px;justify-items:center}
+.empty svg{width:64px;color:var(--headline)}
+.empty h2{font-size:40px;color:var(--headline)}
+.empty p{margin:0;max-width:52ch;color:var(--ink-muted)}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr}.updated{text-align:left}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .podium{grid-template-columns:1fr;align-items:stretch}
+  .step.p1,.step.p2,.step.p3{order:0;min-height:0}
+  .row{grid-template-columns:40px minmax(0,1fr) 64px;grid-template-areas:"rk nm sc" "rk nm dl" "bar bar bar";row-gap:6px}
+  .row .rk{grid-area:rk;font-size:24px}.row .nm{grid-area:nm}.row .sc{grid-area:sc;font-size:24px}.row .barcell{grid-area:bar}.row .delta{grid-area:dl;font-size:12px}
+  .vs{grid-template-columns:1fr}.vsmid{padding:8px;font-size:28px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="band">
+  <div class="wrap">
+    <div class="brandrow"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="448.08 237.18 216.46 234.08"><g fill="currentColor"><path fill-rule="nonzero" d="M467.66 312.69L457.88 304.31L448.08 312.69L448.08 336.00L457.87 327.63L467.66 336.00L467.66 312.69Z"/><path fill-rule="nonzero" d="M566.08 245.55L556.31 237.18L546.53 245.55L546.51 245.55L546.51 277.29L546.53 277.29L556.31 268.92L566.08 277.29L566.09 277.29L566.09 245.55L566.08 245.55Z"/><path fill-rule="nonzero" d="M578.73 301.55L578.75 301.55L588.53 293.17L598.29 301.54L598.28 275.41L598.26 275.41L588.49 267.03L578.71 275.41L578.69 275.41L578.73 301.55Z"/><path fill-rule="nonzero" d="M533.91 296.33L533.89 296.33L524.12 287.96L514.34 296.33L514.33 296.33L514.33 331.07L514.34 331.07L524.12 322.70L533.89 331.07L533.91 331.07L533.91 296.33Z"/><path fill-rule="nonzero" d="M533.93 261.81L533.91 261.81L524.14 253.43L514.36 261.81L514.34 261.81L514.33 281.30L514.34 281.30L524.12 272.93L533.89 281.30L533.91 281.30L533.93 261.81Z"/><path fill-rule="nonzero" d="M611.90 344.97L621.70 336.60L631.49 344.97L631.49 323.27L621.70 314.89L611.90 323.27L611.90 344.97Z"/><path fill-rule="nonzero" d="M500.75 292.28L490.98 283.90L481.18 292.28L481.18 325.73L490.96 317.35L500.75 325.73L500.75 292.28Z"/><path fill-rule="nonzero" d="M611.90 308.23L621.70 299.86L631.47 308.23L631.48 308.23L631.47 286.53L631.47 286.53L621.70 278.16L611.91 286.53L611.90 308.23Z"/><path fill-rule="nonzero" d="M644.94 364.11L654.43 355.98L664.51 364.42C664.52 363.97 664.53 309.27 664.53 309.27L664.52 309.27L654.75 300.89L644.97 309.27L644.95 309.27C644.95 309.27 644.95 363.75 644.94 364.11Z"/><path fill-rule="nonzero" d="M490.55 354.70L500.79 362.11L500.75 340.76L490.96 332.39L481.17 340.76C481.17 340.76 481.18 363.73 481.18 364.08L490.55 354.70Z"/><path fill-rule="nonzero" d="M556.31 283.95L546.53 292.32L546.52 292.32L546.52 363.87L546.51 363.87C546.51 369.28 550.89 373.66 556.30 373.66C561.71 373.66 566.08 369.29 566.10 363.89L566.10 363.87L566.10 292.32L566.08 292.32L556.31 283.95Z"/><path fill-rule="nonzero" d="M578.69 362.96C578.68 375.31 568.65 385.33 556.29 385.33C543.95 385.33 533.94 375.33 533.91 362.99L533.91 346.10L533.89 346.10L524.12 337.73L514.34 346.10L514.33 346.10L514.32 362.96C514.32 386.43 533.13 405.46 556.32 405.46C579.52 405.46 598.32 386.43 598.32 362.96L598.30 316.57L588.53 308.21L578.75 316.59L578.73 316.59L578.69 362.96Z"/><path fill-rule="nonzero" d="M654.43 371.01L643.22 380.53C635.09 421.10 599.27 451.65 556.32 451.65C507.37 451.65 467.68 411.97 467.67 363.02L467.66 351.04L467.64 351.04L457.87 342.66L448.09 351.04L448.08 351.04L448.08 363.02L448.08 363.03C448.08 422.80 496.53 471.25 556.31 471.25C610.76 471.25 655.81 431.03 663.40 378.69L654.43 371.01Z"/><path fill-rule="nonzero" d="M631.49 360.02L631.47 360.02L621.70 351.63L611.92 360.02L611.90 360.02L611.89 363.01C611.87 393.77 587.01 418.72 556.34 418.72C530.72 418.72 509.15 401.30 502.73 377.63L491.77 369.68L482.81 378.72C490.04 412.68 520.21 438.16 556.33 438.16C597.84 438.16 631.49 404.51 631.49 363.01L631.49 360.02Z"/></g></svg><span class="eyebrow">BBYO Engagement Leaderboard</span></div>
+    <div class="hero">
+      <div>
+        <h1>Membership <span>Mania</span></h1>
+      </div>
+      <div class="updated" id="updated"><b>—</b>last refresh</div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="wrap">
+    <div class="seg" role="group" aria-label="League">
+      <button type="button" data-league="North America" aria-pressed="true">North America</button>
+      <button type="button" data-league="International" aria-pressed="false">International</button>
+      <button type="button" data-league="all" aria-pressed="false">Everyone</button>
+    </div>
+    <label class="ctl" for="metric">Rank by
+      <select id="metric">
+        <option value="score">Engagement score</option>
+        <option value="top">Top-tier share</option>
+        <option value="total">Most teens</option>
+        <option value="delta">Biggest climb</option>
+      </select>
+    </label>
+    <label class="ctl" for="hub">Hub
+      <select id="hub"><option value="">All hubs</option></select>
+    </label>
+  </div>
+</div>
+
+<main>
+  <div class="wrap" id="app">
+    <div class="empty" id="empty">
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="448.08 237.18 216.46 234.08"><g fill="currentColor"><path fill-rule="nonzero" d="M467.66 312.69L457.88 304.31L448.08 312.69L448.08 336.00L457.87 327.63L467.66 336.00L467.66 312.69Z"/><path fill-rule="nonzero" d="M566.08 245.55L556.31 237.18L546.53 245.55L546.51 245.55L546.51 277.29L546.53 277.29L556.31 268.92L566.08 277.29L566.09 277.29L566.09 245.55L566.08 245.55Z"/><path fill-rule="nonzero" d="M578.73 301.55L578.75 301.55L588.53 293.17L598.29 301.54L598.28 275.41L598.26 275.41L588.49 267.03L578.71 275.41L578.69 275.41L578.73 301.55Z"/><path fill-rule="nonzero" d="M533.91 296.33L533.89 296.33L524.12 287.96L514.34 296.33L514.33 296.33L514.33 331.07L514.34 331.07L524.12 322.70L533.89 331.07L533.91 331.07L533.91 296.33Z"/><path fill-rule="nonzero" d="M533.93 261.81L533.91 261.81L524.14 253.43L514.36 261.81L514.34 261.81L514.33 281.30L514.34 281.30L524.12 272.93L533.89 281.30L533.91 281.30L533.93 261.81Z"/><path fill-rule="nonzero" d="M611.90 344.97L621.70 336.60L631.49 344.97L631.49 323.27L621.70 314.89L611.90 323.27L611.90 344.97Z"/><path fill-rule="nonzero" d="M500.75 292.28L490.98 283.90L481.18 292.28L481.18 325.73L490.96 317.35L500.75 325.73L500.75 292.28Z"/><path fill-rule="nonzero" d="M611.90 308.23L621.70 299.86L631.47 308.23L631.48 308.23L631.47 286.53L631.47 286.53L621.70 278.16L611.91 286.53L611.90 308.23Z"/><path fill-rule="nonzero" d="M644.94 364.11L654.43 355.98L664.51 364.42C664.52 363.97 664.53 309.27 664.53 309.27L664.52 309.27L654.75 300.89L644.97 309.27L644.95 309.27C644.95 309.27 644.95 363.75 644.94 364.11Z"/><path fill-rule="nonzero" d="M490.55 354.70L500.79 362.11L500.75 340.76L490.96 332.39L481.17 340.76C481.17 340.76 481.18 363.73 481.18 364.08L490.55 354.70Z"/><path fill-rule="nonzero" d="M556.31 283.95L546.53 292.32L546.52 292.32L546.52 363.87L546.51 363.87C546.51 369.28 550.89 373.66 556.30 373.66C561.71 373.66 566.08 369.29 566.10 363.89L566.10 363.87L566.10 292.32L566.08 292.32L556.31 283.95Z"/><path fill-rule="nonzero" d="M578.69 362.96C578.68 375.31 568.65 385.33 556.29 385.33C543.95 385.33 533.94 375.33 533.91 362.99L533.91 346.10L533.89 346.10L524.12 337.73L514.34 346.10L514.33 346.10L514.32 362.96C514.32 386.43 533.13 405.46 556.32 405.46C579.52 405.46 598.32 386.43 598.32 362.96L598.30 316.57L588.53 308.21L578.75 316.59L578.73 316.59L578.69 362.96Z"/><path fill-rule="nonzero" d="M654.43 371.01L643.22 380.53C635.09 421.10 599.27 451.65 556.32 451.65C507.37 451.65 467.68 411.97 467.67 363.02L467.66 351.04L467.64 351.04L457.87 342.66L448.09 351.04L448.08 351.04L448.08 363.02L448.08 363.03C448.08 422.80 496.53 471.25 556.31 471.25C610.76 471.25 655.81 431.03 663.40 378.69L654.43 371.01Z"/><path fill-rule="nonzero" d="M631.49 360.02L631.47 360.02L621.70 351.63L611.92 360.02L611.90 360.02L611.89 363.01C611.87 393.77 587.01 418.72 556.34 418.72C530.72 418.72 509.15 401.30 502.73 377.63L491.77 369.68L482.81 378.72C490.04 412.68 520.21 438.16 556.33 438.16C597.84 438.16 631.49 404.51 631.49 363.01L631.49 360.02Z"/></g></svg>
+      <h2 id="emptyTitle">Loading the standings</h2>
+      <p id="emptyText">Region totals and engagement tiers load from the daily refresh.</p>
+    </div>
+
+    <section id="podiumSec" hidden>
+      <header><h2>The podium</h2><p id="podiumNote"></p></header>
+      <div class="podium" id="podium"></div>
+    </section>
+
+    <section id="boardSec" hidden>
+      <header>
+        <h2>Full standings</h2>
+        <div class="legend">
+          <span><i style="background:var(--tier-engaged)"></i>Top: Highly Engaged / Core</span>
+          <span><i style="background:var(--tier-involved)"></i>Middle: Involved / Very Involved</span>
+          <span><i style="background:var(--tier-connected)"></i>Entry: Connected / Involved</span>
+          <span><i style="background:var(--surface);border:1px solid var(--line)"></i>Not attending</span>
+        </div>
+      </header>
+      <div class="board" id="board"></div>
+    </section>
+
+    <section id="vsSec" hidden>
+      <header><h2>Head to head</h2><p>Pick any two regions and see who wins each category.</p></header>
+      <div class="vs">
+        <div class="side a"><label class="eyebrow" for="vsA">Challenger</label><select id="vsA"></select><div id="vsAbody"></div></div>
+        <div class="vsmid">VS</div>
+        <div class="side b"><label class="eyebrow" for="vsB">Defender</label><select id="vsB"></select><div id="vsBbody"></div></div>
+      </div>
+      <p class="verdict" id="verdict"></p>
+    </section>
+
+
+    <section id="quietSec" hidden>
+      <header><h2>Not on the board yet</h2><p>These regions reported zero involvement in the latest refresh.</p></header>
+      <div class="quiet" id="quiet"></div>
+    </section>
+
+    <section id="methodSec">
+      <header><h2>How scoring works</h2></header>
+      <div class="method">
+        <p>Each region's total is its membership count. The bar shows how far up the ladder those members go: the light bar is everyone attending at least the entry level, the middle bar the middle tier or higher, the bright bar the top tier. The engagement score averages those three shares, so a region where every member reaches the top tier scores 100.</p>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Level</th><th>International sheet</th><th>North America sheet</th></tr></thead>
+          <tbody>
+            <tr><td>Top</td><td>Highly Engaged</td><td>Core</td></tr>
+            <tr><td>Middle</td><td>Involved</td><td>Very Involved</td></tr>
+            <tr><td>Entry</td><td>Connect</td><td>Involved (1+ events)</td></tr>
+          </tbody>
+        </table></div>
+        <p>International totals come from the TOTAL Involvement column; members who aren't Highly Engaged, Involved or Connected (such as paid members not attending events) count as not attending. North America totals come from the Membership tab, and uninvolved members count as not attending.</p>
+        <p>"Biggest climb" compares today's score with the previous refresh.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+(() => {
+  const CROWN = '<svg class="crown" viewBox="0 0 48 36" aria-hidden="true"><path fill="currentColor" d="M2 8l11 10L24 2l11 16L46 8l-5 26H7z"/></svg>';
+  const state = { league: 'North America', metric: 'score', hub: '', snaps: [], open: null, showAll: false };
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => (n ?? 0).toLocaleString('en-US');
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function enrich(r) {
+    const paid = r.paid || 0, e = r.engaged || 0, i = r.involved || 0, c = r.connected || 0;
+    const total = r.total || (paid + e + i + c);
+    // Ladder: how many teens reach each level. North America counts are already "at least this level";
+    // International tiers are exclusive, so they are summed upward; anyone left over (including paid members
+    // not in a tier) is a member who isn't attending.
+    let r3, r2, r1;
+    if (r.cumulative) { r3 = e; r2 = i; r1 = c; } else { r3 = e; r2 = e + i; r1 = e + i + c; }
+    const score = total ? Math.round(((r1 + r2 + r3) / (3 * total)) * 1000) / 10 : 0;
+    const p = (n) => (total ? (n / total) * 100 : 0);
+    return { ...r, paid, engaged: e, involved: i, connected: c, total, r1, r2, r3, top: r3, score, topPct: p(r3), p1: p(r1), p2: p(r2), p3: p(r3), active: r1 + (r.cumulative ? 0 : 0) };
+  }
+  function regionsOf(snap) { return (snap?.regions || []).map(enrich); }
+
+  function current() {
+    const latest = state.snaps[0], prev = state.snaps[1];
+    const prevMap = new Map(regionsOf(prev).map((r) => [r.id, r]));
+    return regionsOf(latest).map((r) => {
+      const p = prevMap.get(r.id);
+      return { ...r, delta: p ? Math.round((r.score - p.score) * 10) / 10 : null, prevTotal: p ? p.total : null };
+    });
+  }
+  function filtered(all) {
+    return all.filter((r) => (state.league === 'all' || r.league === state.league) && (!state.hub || r.hub === state.hub));
+  }
+  const sorters = {
+    score: (a, b) => b.score - a.score || b.total - a.total,
+    top: (a, b) => b.topPct - a.topPct || b.total - a.total,
+    total: (a, b) => b.total - a.total || b.score - a.score,
+    delta: (a, b) => (b.delta ?? -1e9) - (a.delta ?? -1e9) || b.score - a.score,
+  };
+  const metricLabel = { score: 'score', top: '% top tier', total: 'teens', delta: 'pts vs last' };
+  function metricVal(r) {
+    if (state.metric === 'total') return fmt(r.total);
+    if (state.metric === 'top') return Math.round(r.topPct) + '%';
+    if (state.metric === 'delta') return r.delta == null ? '—' : (r.delta > 0 ? '+' : '') + r.delta;
+    return r.score.toFixed(0);
+  }
+  function deltaHtml(r) {
+    if (r.delta == null) return '<div class="delta flat">new</div>';
+    if (r.delta > 0) return `<div class="delta up">▲ ${r.delta}</div>`;
+    if (r.delta < 0) return `<div class="delta down">▼ ${Math.abs(r.delta)}</div>`;
+    return '<div class="delta flat">— 0</div>';
+  }
+  function bar(r) {
+    const cl = (v) => Math.min(100, Math.max(0, v));
+    return `<div class="bar ladder" role="img" aria-label="${esc(r.name)}: ${Math.round(r.p1)}% attending, ${Math.round(r.p2)}% middle tier or higher, ${Math.round(r.p3)}% top tier, of ${r.total} members">
+      <span style="width:${cl(r.p1)}%;background:var(--tier-connected)"></span>
+      <span style="width:${cl(r.p2)}%;background:var(--tier-involved)"></span>
+      <span style="width:${cl(r.p3)}%;background:var(--tier-engaged)"></span></div>
+      <div class="barmeta num">${fmt(r.total)} members · ${Math.round(r.p1)}% attending · ${Math.round(r.p3)}% top tier</div>`;
+  }
+
+  function render() {
+    const latest = state.snaps[0];
+    if (!latest) return;
+    $('empty').hidden = true;
+    ['podiumSec', 'boardSec', 'vsSec'].forEach((id) => ($(id).hidden = false));
+    const d = new Date((latest.date || '') + 'T12:00:00');
+    $('updated').innerHTML = `<b>${isNaN(d) ? esc(latest.date) : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</b>last refresh${latest.missing?.length ? ' · ' + esc(latest.missing.join(', ')) + ' pending' : ''}`;
+
+    const all = current();
+    const hubs = [...new Set(all.map((r) => r.hub))].sort();
+    const hubSel = $('hub');
+    if (hubSel.options.length - 1 !== hubs.length) {
+      hubSel.innerHTML = '<option value="">All hubs</option>' + hubs.map((h) => `<option>${esc(h)}</option>`).join('');
+      hubSel.value = state.hub;
+    }
+    const scope = filtered(all);
+    const live = scope.filter((r) => r.total > 0).sort(sorters[state.metric]);
+    const quiet = scope.filter((r) => !r.total);
+
+
+    // podium
+    const p = live.slice(0, 3);
+    $('podiumNote').textContent = `Top three by ${$('metric').selectedOptions[0].text.toLowerCase()}${state.hub ? ' in ' + state.hub : ''}.`;
+    $('podium').innerHTML = p.map((r, i) => `<div class="step p${i + 1}">${i === 0 ? CROWN : ''}
+      <div class="place">${i + 1}</div><div class="rname">${esc(r.name)}</div><div class="rhub">${esc(r.hub)} · ${esc(r.league)}</div>
+      <div class="big num">${metricVal(r)}<small>${metricLabel[state.metric]}</small></div></div>`).join('');
+
+    // board
+    const shown = state.showAll ? live : live.slice(0, 25);
+    $('board').innerHTML = shown.map((r, i) => `<button type="button" class="row" data-id="${esc(r.id)}" aria-expanded="${state.open === r.id}">
+        <div class="rk num">${i + 1}</div>
+        <div class="nm"><b>${esc(r.name)}</b><span>${esc(r.hub)}</span></div>
+        <div class="barcell">${bar(r)}</div>
+        <div class="sc num">${metricVal(r)}<small>${metricLabel[state.metric].toUpperCase()}</small></div>
+        ${deltaHtml(r)}
+      </button>${state.open === r.id ? detail(r) : ''}`).join('') +
+      (live.length > 25 ? `<button type="button" class="more" id="moreBtn">${state.showAll ? 'Show top 25' : `Show all ${live.length}`}</button>` : '');
+    if (!live.length) $('board').innerHTML = '<p class="method">No regions match this filter yet.</p>';
+
+    $('quietSec').hidden = !quiet.length;
+    $('quiet').innerHTML = quiet.map((r) => `<span>${esc(r.name)}</span>`).join('');
+
+    renderVs(live.length ? live : all);
+  }
+
+  function detail(r) {
+    const pct = (n) => (r.total ? Math.round((n / r.total) * 100) : 0) + '%';
+    const change = r.prevTotal != null ? ` · ${r.total - r.prevTotal >= 0 ? '+' : ''}${r.total - r.prevTotal} members since last refresh` : '';
+    const cells = r.league === 'North America'
+      ? [[r.total, 'total membership'], [r.connected, `involved, 1+ events (${pct(r.connected)})`], [r.involved, `very involved (${pct(r.involved)})`], [r.engaged, `core (${pct(r.engaged)})`], [r.uninvolved ?? r.total - r.connected, `uninvolved (${pct(r.uninvolved ?? r.total - r.connected)})`]]
+      : [[r.total, 'total membership'], [r.engaged, `highly engaged (${pct(r.engaged)})`], [r.involved, `involved (${pct(r.involved)})`], [r.connected, `connected (${pct(r.connected)})`], [Math.max(r.total - r.r1, 0), `not attending (${pct(Math.max(r.total - r.r1, 0))})`]];
+    return `<div class="detail">${cells.map(([n, l]) => `<div><b class="num">${fmt(n)}</b><span>${l}</span></div>`).join('')}
+      <div><b class="num">${r.score.toFixed(1)}</b><span>engagement score</span></div>
+      <p class="note">${esc(r.league)} · ${esc(r.hub)}${change}</p></div>`;
+  }
+
+  function renderVs(list) {
+    const a = $('vsA'), b = $('vsB');
+    const opts = list.map((r) => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join('');
+    const keepA = a.value, keepB = b.value;
+    a.innerHTML = opts; b.innerHTML = opts;
+    a.value = list.some((r) => r.id === keepA) ? keepA : list[0]?.id || '';
+    b.value = list.some((r) => r.id === keepB) ? keepB : list[1]?.id || list[0]?.id || '';
+    drawVs(list);
+  }
+  function drawVs(list) {
+    const A = list.find((r) => r.id === $('vsA').value), B = list.find((r) => r.id === $('vsB').value);
+    if (!A || !B) return;
+    const cats = [['Engagement score', (r) => r.score, (v) => v.toFixed(1)], ['Total teens', (r) => r.total, fmt], ['Top tier', (r) => r.top, fmt], ['Top-tier share', (r) => r.topPct, (v) => Math.round(v) + '%'], ['Attending share', (r) => r.p1, (v) => Math.round(v) + '%'], ['Middle tier or higher', (r) => r.p2, (v) => Math.round(v) + '%']];
+    let wa = 0, wb = 0;
+    const side = (R, O, isA) => `<div class="bignum num">${R.score.toFixed(0)}</div><dl>${cats.map(([k, f, show]) => {
+      const win = f(R) > f(O); if (win) isA ? wa++ : wb++;
+      return `<dt>${k}</dt><dd class="num${win ? ' win' : ''}">${show(f(R))}</dd>`; }).join('')}</dl>`;
+    $('vsAbody').innerHTML = side(A, B, true);
+    $('vsBbody').innerHTML = side(B, A, false);
+    $('verdict').textContent = A.id === B.id ? 'Pick two different regions.' : wa === wb ? `Dead even: ${wa} categories each.` : `${wa > wb ? A.name : B.name} takes ${Math.max(wa, wb)} of ${cats.length} categories.`;
+  }
+
+  // events
+  document.querySelectorAll('[data-league]').forEach((btn) => btn.addEventListener('click', () => {
+    state.league = btn.dataset.league; state.hub = ''; $('hub').value = '';
+    document.querySelectorAll('[data-league]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    render();
+  }));
+  $('metric').addEventListener('change', (e) => { state.metric = e.target.value; render(); });
+  $('hub').addEventListener('change', (e) => { state.hub = e.target.value; render(); });
+  $('board').addEventListener('click', (e) => {
+    if (e.target.closest('#moreBtn')) { state.showAll = !state.showAll; render(); return; }
+    const row = e.target.closest('.row'); if (!row) return;
+    state.open = state.open === row.dataset.id ? null : row.dataset.id; render();
+  });
+  const vsChange = () => drawVs(filtered(current()).filter((r) => r.total > 0).length ? filtered(current()).filter((r) => r.total > 0) : current());
+  $('vsA').addEventListener('change', vsChange);
+  $('vsB').addEventListener('change', vsChange);
+
+  function showEmpty(title, text) { $('emptyTitle').textContent = title; $('emptyText').textContent = text; }
+  // data: latest.json names the newest and previous daily files in data/.
+  // Each daily file is compact: {date, updated, rows: [[league, hub, name, total, paid, engaged, involved, connected, uninvolved]]}.
+  // North America rows are "at least this level" counts; International rows are exclusive tiers.
+  const slug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const expand = (d) => ({ date: d.date, updated: d.updated, missing: d.missing, regions: (d.rows || []).map((x) => {
+    const na = x[0] === 'NA';
+    return { id: slug((na ? 'na ' : 'intl ') + x[2]), league: na ? 'North America' : 'International', hub: x[1], name: x[2], total: x[3], paid: x[4], engaged: x[5], involved: x[6], connected: x[7], uninvolved: x[8], cumulative: na };
+  }) });
+  const get = (p) => fetch(p + '?v=' + Date.now(), { cache: 'no-store' }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  showEmpty('Loading the standings', 'Fetching the latest numbers.');
+  get('latest.json')
+    .then((l) => Promise.all([get('data-' + l.today + '.json'), l.previous ? get('data-' + l.previous + '.json').catch(() => null) : null]))
+    .then(([t, p]) => { state.snaps = [expand(t)].concat(p ? [expand(p)] : []); render(); })
+    .catch(() => showEmpty('Standings unavailable', 'The numbers could not be loaded. Refresh the page to try again.'));
+})();
+</script>
+
+</body>
+</html>
