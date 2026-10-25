@@ -173,7 +173,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
       <select id="metric">
         <option value="score">Involvement score</option>
         <option value="top">Core share</option>
-        <option value="total">Most teens</option>
+        <option value="total">Most members</option>
         <option value="delta">Biggest climb</option>
       </select>
     </label>
@@ -284,7 +284,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     total: (a, b) => b.total - a.total || b.score - a.score,
     delta: (a, b) => (b.delta ?? -1e9) - (a.delta ?? -1e9) || b.score - a.score,
   };
-  const metricLabel = { score: 'score', top: '% core', total: 'teens', delta: 'pts vs last' };
+  const metricLabel = { score: 'score', top: '% core', total: 'members', delta: 'pts vs last' };
   function metricVal(r) {
     if (state.metric === 'total') return fmt(r.total);
     if (state.metric === 'top') return Math.round(r.topPct) + '%';
@@ -315,9 +315,10 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     $('updated').innerHTML = `<b>${isNaN(d) ? esc(latest.date) : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</b>last refresh${latest.missing?.length ? ' · ' + esc(latest.missing.join(', ')) + ' pending' : ''}`;
 
     const all = current();
-    const hubs = [...new Set(all.map((r) => r.hub))].sort();
+    const hubs = [...new Set(all.filter((r) => state.league === 'all' || r.league === state.league).map((r) => r.hub))].sort();
     const hubSel = $('hub');
-    if (hubSel.options.length - 1 !== hubs.length) {
+    if (hubSel.dataset.key !== hubs.join('|')) {
+      hubSel.dataset.key = hubs.join('|');
       hubSel.innerHTML = '<option value="">All hubs</option>' + hubs.map((h) => `<option>${esc(h)}</option>`).join('');
       hubSel.value = state.hub;
     }
@@ -372,7 +373,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   function drawVs(list) {
     const A = list.find((r) => r.id === $('vsA').value), B = list.find((r) => r.id === $('vsB').value);
     if (!A || !B) return;
-    const cats = [['Involvement score', (r) => r.score, (v) => v.toFixed(1)], ['Total teens', (r) => r.total, fmt], ['Core', (r) => r.r3, fmt], ['Core share', (r) => r.p3, (v) => Math.round(v) + '%'], ['Very Involved share', (r) => r.p2, (v) => Math.round(v) + '%'], ['Involved share', (r) => r.p1, (v) => Math.round(v) + '%']];
+    const cats = [['Involvement score', (r) => r.score, (v) => v.toFixed(1)], ['Total members', (r) => r.total, fmt], ['Core', (r) => r.r3, fmt], ['Core share', (r) => r.p3, (v) => Math.round(v) + '%'], ['Very Involved share', (r) => r.p2, (v) => Math.round(v) + '%'], ['Involved share', (r) => r.p1, (v) => Math.round(v) + '%']];
     let wa = 0, wb = 0;
     const side = (R, O, isA) => `<div class="bignum num">${R.score.toFixed(0)}</div><dl>${cats.map(([k, f, show]) => {
       const win = f(R) > f(O); if (win) isA ? wa++ : wb++;
