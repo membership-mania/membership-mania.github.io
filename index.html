@@ -333,7 +333,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   function rankLabel(r, i, list) {
     if (state.metric !== 'score') return String(i + 1);
     const rank = 1 + list.filter((x) => x.pts > r.pts).length;
-    return (list.filter((x) => x.pts === r.pts).length > 1 ? 'T' : '') + rank;
+    return String(rank);
   }
   function deltaHtml(r) {
     if (r.delta == null) return '<div class="delta flat">new</div>';
