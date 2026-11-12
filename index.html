@@ -207,26 +207,26 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
       <summary>How scoring works</summary>
       <div class="method" id="howNA">
         <p>Regions are scored on BBYO's chapter health categories. Every category is a percentage of the region's own membership, so a region with 50 members competes fairly with one with 1,000.</p>
-        <p>Each category is worth up to <b>10 points</b>, for an involvement score out of <b>40</b>. A region gets the full 10 points when it reaches BBYO's top (4-point) mark, and earns whole points on the way there.</p>
+        <p>Each category is worth up to <b>25 points</b>, for an involvement score out of <b>100</b>. Regions earn whole points as they move toward the full-points mark.</p>
         <div class="tblwrap"><table class="rules">
-          <thead><tr><th>Category</th><th>Full 10 points</th><th>How points are earned</th></tr></thead>
+          <thead><tr><th>Category</th><th>Full 25 points</th><th>How points are earned</th></tr></thead>
           <tbody>
-            <tr><th>New Members</th><td>40% or more</td><td>1 point for every 4%</td></tr>
-            <tr><th>Uninvolved Members</th><td>25% or less</td><td>Lose 1 point for every 7.5% above 25%</td></tr>
-            <tr><th>Very Involved Teens</th><td>65% or more</td><td>1 point for every 6.5%</td></tr>
-            <tr><th>Core Members</th><td>20% or more</td><td>1 point for every 2%</td></tr>
+            <tr><th>New Members</th><td>40% or more</td><td>1 point for every 1.6%</td></tr>
+            <tr><th>Uninvolved Members</th><td>25% or less</td><td>Lose 1 point for every 3% above 25%</td></tr>
+            <tr><th>Very Involved Teens</th><td>65% or more</td><td>1 point for every 2.6%</td></tr>
+            <tr><th>Core Members</th><td>40% or more</td><td>1 point for every 1.6%</td></tr>
           </tbody>
         </table></div>
         <p>If two regions have the same score, the region with more members ranks higher.</p>
       </div>
       <div class="method" id="howIntl" hidden>
         <p>International regions are scored on two groups from the international sheet. Every category is a percentage, so a small region competes fairly with a large one.</p>
-        <p>Each category is worth up to <b>10 points</b>, for an involvement score out of <b>20</b>. A region gets the full 10 points at the top mark and earns whole points on the way there.</p>
+        <p>Each category is worth up to <b>50 points</b>, for an involvement score out of <b>100</b>. Regions earn whole points as they move toward the full-points mark.</p>
         <div class="tblwrap"><table class="rules">
-          <thead><tr><th>Category</th><th>Full 10 points</th><th>How points are earned</th></tr></thead>
+          <thead><tr><th>Category</th><th>Full 50 points</th><th>How points are earned</th></tr></thead>
           <tbody>
-            <tr><th>Members + Highly Involved</th><td>60% or more</td><td>1 point for every 6%</td></tr>
-            <tr><th>Involved + Connect</th><td>80% or more</td><td>1 point for every 8%</td></tr>
+            <tr><th>Members + Highly Involved</th><td>100%</td><td>1 point for every 2%</td></tr>
+            <tr><th>Involved + Connect</th><td>100%</td><td>1 point for every 2%</td></tr>
           </tbody>
         </table></div>
         <p><b>Members + Highly Involved</b> is the share of the region's total who are paid members (the Members column) or Highly Involved.</p>
@@ -285,19 +285,19 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   const fmt = (n) => (n ?? 0).toLocaleString('en-US');
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-  // Each category is worth up to 10 whole points; full points at BBYO's top (4-point) mark.
+  // Each category is worth up to `max` whole points; full points at `full` percent.
   const RULES = [
-    { key: 'nm', label: 'New Members', better: 'high', full: 40 },
-    { key: 'un', label: 'Uninvolved Members', better: 'low', full: 25 },
-    { key: 'vi', label: 'Very Involved Teens', better: 'high', full: 65 },
-    { key: 'co', label: 'Core Members', better: 'high', full: 20 },
+    { key: 'nm', label: 'New Members', better: 'high', full: 40, max: 25 },
+    { key: 'un', label: 'Uninvolved Members', better: 'low', full: 25, max: 25 },
+    { key: 'vi', label: 'Very Involved Teens', better: 'high', full: 65, max: 25 },
+    { key: 'co', label: 'Core Members', better: 'high', full: 40, max: 25 },
   ];
-  // International: two groups, each worth up to 10 points.
+  // International: two groups, each worth up to 50 points.
   const RULES_INTL = [
-    { key: 'mh', label: 'Members + Highly Involved', better: 'high', full: 60 },
-    { key: 'ic', label: 'Involved + Connect', better: 'high', full: 80 },
+    { key: 'mh', label: 'Members + Highly Involved', better: 'high', full: 100, max: 50 },
+    { key: 'ic', label: 'Involved + Connect', better: 'high', full: 100, max: 50 },
   ];
-  const ptsFor = (k, v) => Math.max(0, Math.min(10, Math.floor((k.better === 'high' ? v / k.full : (100 - v) / (100 - k.full)) * 10 + 1e-9)));
+  const ptsFor = (k, v) => Math.max(0, Math.min(k.max, Math.floor((k.better === 'high' ? v / k.full : (100 - v) / (100 - k.full)) * k.max + 1e-9)));
 
   function enrich(r) {
     const paid = r.paid || 0, e = r.engaged || 0, i = r.involved || 0, c = r.connected || 0;
@@ -314,7 +314,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
       co: p(r3),
     } : { mh: p(r3), ic: i + c ? (i / (i + c)) * 100 : 100 };
     const cats = (r.cumulative ? RULES : RULES_INTL).filter((k) => share[k.key] != null).map((k) => ({ ...k, pct: share[k.key], pts: total ? ptsFor(k, share[k.key]) : 0 }));
-    const pts = cats.reduce((s, x) => s + x.pts, 0), max = cats.length * 10;
+    const pts = cats.reduce((s, x) => s + x.pts, 0), max = cats.reduce((s, x) => s + x.max, 0);
     // Tie-break between equal points: stronger percentages across the same categories.
     const fine = cats.reduce((s, x) => s + (x.better === 'high' ? x.pct : -x.pct), 0);
     return { ...r, paid, engaged: e, involved: i, connected: c, total, r1, r2, r3, top: r3, cats, pts, max, fine, score: pts, topPct: p(r3), p1: p(r1), p2: p(r2), p3: p(r3) };
@@ -429,16 +429,16 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
 
   // What a region needs for its next point in a category.
   function nextPoint(k) {
-    if (k.pts >= 10) return 'Full points';
-    const t = k.better === 'high' ? ((k.pts + 1) * k.full) / 10 : 100 - ((k.pts + 1) * (100 - k.full)) / 10;
+    if (k.pts >= k.max) return 'Full points';
+    const t = k.better === 'high' ? ((k.pts + 1) * k.full) / k.max : 100 - ((k.pts + 1) * (100 - k.full)) / k.max;
     const v = Math.round(t * 10) / 10;
     return k.better === 'high' ? `Next point at ${v}%` : `Next point at ${v}% or lower`;
   }
   function detail(r) {
     const cards = r.cats.map((k) => `<div class="pcard">
         <div class="ptop"><span>${esc(catName(k))}</span><span class="pval num">${pctf(k.pct)}</span></div>
-        <div class="meter${k.pts >= 10 ? ' full' : ''}" role="img" aria-label="${k.pts} of 10 points">${Array.from({ length: 10 }, (_, n) => `<i${n < k.pts ? ` class="on" style="--i:${n}"` : ''}></i>`).join('')}</div>
-        <div class="pfoot"><span><b class="num">${k.pts}</b> / 10 pts</span><span>${nextPoint(k)}</span></div>
+        <div class="meter${k.pts >= k.max ? ' full' : ''}" role="img" aria-label="${k.pts} of ${k.max} points">${Array.from({ length: 10 }, (_, n) => `<i${n < Math.round((k.pts / k.max) * 10) ? ` class="on" style="--i:${n}"` : ''}></i>`).join('')}</div>
+        <div class="pfoot"><span><b class="num">${k.pts}</b> / ${k.max} pts</span><span>${nextPoint(k)}</span></div>
       </div>`).join('');
     return `<div class="detail"><div class="pgrid">${cards}</div></div>`;
   }
