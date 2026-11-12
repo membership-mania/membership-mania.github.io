@@ -198,7 +198,8 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
       <summary>How scoring works</summary>
       <div class="method" id="howNA">
         <p>Regions are scored with BBYO's official chapter health rules. Every category is a percentage of the region's own membership, so a region with 50 members competes fairly with one with 1,000.</p>
-        <p>A region earns 1 to 4 points in each of the four categories below. The points add up to its involvement score, out of <b>16</b>.</p>
+        <p>A region earns up to 4 points in each of the four categories below, for an involvement score out of <b>16</b>. Points include partial credit: a region gets the points for the band it's in plus a fraction for how close it is to the next band. For example, Core at 17.5% is halfway from 15% to 20%, so it earns 3.5 points.</p>
+        <p>Scores are shown to one decimal. If two regions still have the same score, the region with more members ranks higher.</p>
         <div class="tblwrap"><table class="rules">
           <thead><tr><th>Category</th><th>4 points</th><th>3 points</th><th>2 points</th><th>1 point</th></tr></thead>
           <tbody>
@@ -210,17 +211,18 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
         </table></div>
       </div>
       <div class="method" id="howIntl" hidden>
-        <p>International regions are scored with BBYO's official chapter health rules, adapted to the international sheet. Every category is a percentage of the region's own total involvement, so a small region competes fairly with a large one.</p>
-        <p>The international sheet doesn't track new members, so a region earns 1 to 4 points in each of the three categories below. The points add up to its involvement score, out of <b>12</b>.</p>
+        <p>International regions are scored on two groups from the international sheet. Every category is a percentage, so a small region competes fairly with a large one.</p>
+        <p>A region earns up to 4 points in each category, for an involvement score out of <b>8</b>. Points include partial credit: a region gets the points for the band it's in plus a fraction for how close it is to the next band. For example, 50% Members + Highly Involved is halfway from 40% to 60%, so it earns 3.5 points.</p>
         <div class="tblwrap"><table class="rules">
           <thead><tr><th>Category</th><th>4 points</th><th>3 points</th><th>2 points</th><th>1 point</th></tr></thead>
           <tbody>
-            <tr><th>Not attending</th><td>Less than 24.99%</td><td>25&ndash;34.99%</td><td>35&ndash;49.99%</td><td>More than 50%</td></tr>
-            <tr><th>Highly Involved</th><td>More than 20.01%</td><td>15.01&ndash;20%</td><td>10.01&ndash;15%</td><td>Less than 10%</td></tr>
-            <tr><th>Highly Involved + Involved</th><td>More than 65.01%</td><td>55.01&ndash;65%</td><td>45.01&ndash;55%</td><td>Less than 45%</td></tr>
+            <tr><th>Members + Highly Involved</th><td>60% or more</td><td>40&ndash;59.99%</td><td>20&ndash;39.99%</td><td>Less than 20%</td></tr>
+            <tr><th>Involved + Connect</th><td>80% or more</td><td>60&ndash;79.99%</td><td>40&ndash;59.99%</td><td>Less than 40%</td></tr>
           </tbody>
         </table></div>
-        <p>Not attending is everyone in the region's total who isn't Highly Involved, Involved or Connect.</p>
+        <p><b>Members + Highly Involved</b> is the share of the region's total who are paid members (the Members column) or Highly Involved.</p>
+        <p><b>Involved + Connect</b> looks at the rest of the region: of the teens who are Involved or Connect, the share who have reached Involved.</p>
+        <p>Scores are shown to one decimal. If two regions still have the same score, the region with more teens ranks higher.</p>
       </div>
     </details>
     <div class="empty" id="empty">
@@ -281,9 +283,19 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     { key: 'vi', label: 'Very Involved Teens', better: 'high', cut: [65, 55, 45] },
     { key: 'co', label: 'Core Members', better: 'high', cut: [20, 15, 10] },
   ];
-  const ptsFor = (k, v) => k.better === 'high'
-    ? (v > k.cut[0] ? 4 : v > k.cut[1] ? 3 : v > k.cut[2] ? 2 : 1)
-    : (v < k.cut[0] ? 4 : v < k.cut[1] ? 3 : v < k.cut[2] ? 2 : 1);
+  // International: two groups, each worth up to 4 points.
+  const RULES_INTL = [
+    { key: 'mh', label: 'Members + Highly Involved', better: 'high', cut: [60, 40, 20] },
+    { key: 'ic', label: 'Involved + Connect', better: 'high', cut: [80, 60, 40] },
+  ];
+  // Partial credit: the band's points plus how far the region is toward the next band, to one decimal.
+  const ptsFor = (k, v) => {
+    const [a, b, c] = k.cut;
+    const x = k.better === 'high'
+      ? (v >= a ? 4 : v >= b ? 3 + (v - b) / (a - b) : v >= c ? 2 + (v - c) / (b - c) : 1 + Math.max(v, 0) / c)
+      : (v <= a ? 4 : v <= b ? 3 + (b - v) / (b - a) : v <= c ? 2 + (c - v) / (c - b) : 1 + Math.max(100 - v, 0) / (100 - c));
+    return Math.round(x * 10) / 10;
+  };
 
   function enrich(r) {
     const paid = r.paid || 0, e = r.engaged || 0, i = r.involved || 0, c = r.connected || 0;
@@ -291,16 +303,16 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     // Ladder: how many teens reach each level. North America counts are already "at least this level";
     // International tiers are exclusive, so they are summed upward; anyone left over is not attending.
     let r3, r2, r1;
-    if (r.cumulative) { r3 = e; r2 = i; r1 = c; } else { r3 = e; r2 = e + i; r1 = e + i + c; }
+    if (r.cumulative) { r3 = e; r2 = i; r1 = c; } else { r3 = paid + e; r2 = r3 + i; r1 = r2 + c; }
     const p = (n) => (total ? (n / total) * 100 : 0);
-    const share = {
+    const share = r.cumulative ? {
       nm: r.newMembers != null ? p(r.newMembers) : null,
-      un: r.cumulative && r.uninvolved != null ? p(r.uninvolved) : p(Math.max(total - r1, 0)),
+      un: r.uninvolved != null ? p(r.uninvolved) : p(Math.max(total - r1, 0)),
       vi: p(r2),
       co: p(r3),
-    };
-    const cats = RULES.filter((k) => share[k.key] != null).map((k) => ({ ...k, pct: share[k.key], pts: total ? ptsFor(k, share[k.key]) : 0 }));
-    const pts = cats.reduce((s, x) => s + x.pts, 0), max = cats.length * 4;
+    } : { mh: p(r3), ic: i + c ? (i / (i + c)) * 100 : 100 };
+    const cats = (r.cumulative ? RULES : RULES_INTL).filter((k) => share[k.key] != null).map((k) => ({ ...k, pct: share[k.key], pts: total ? ptsFor(k, share[k.key]) : 0 }));
+    const pts = Math.round(cats.reduce((s, x) => s + x.pts, 0) * 10) / 10, max = cats.length * 4;
     // Tie-break between equal points: stronger percentages across the same categories.
     const fine = cats.reduce((s, x) => s + (x.better === 'high' ? x.pct : -x.pct), 0);
     return { ...r, paid, engaged: e, involved: i, connected: c, total, r1, r2, r3, top: r3, cats, pts, max, fine, score: pts, topPct: p(r3), p1: p(r1), p2: p(r2), p3: p(r3) };
@@ -312,37 +324,38 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     const prevMap = new Map(regionsOf(prev).map((r) => [r.id, r]));
     return regionsOf(latest).map((r) => {
       const p = prevMap.get(r.id);
-      return { ...r, delta: p && p.max === r.max ? r.pts - p.pts : null, prevTotal: p ? p.total : null };
+      return { ...r, delta: p && p.max === r.max && p.cats.map((k) => k.key).join() === r.cats.map((k) => k.key).join() ? Math.round((r.pts - p.pts) * 10) / 10 : null, prevTotal: p ? p.total : null };
     });
   }
   function filtered(all) {
     return all.filter((r) => (state.league === 'all' || r.league === state.league) && (!state.hub || r.hub === state.hub));
   }
   const sorters = {
-    score: (a, b) => b.pts - a.pts || b.fine - a.fine,
+    score: (a, b) => b.pts - a.pts || b.total - a.total || b.fine - a.fine,
     top: (a, b) => b.topPct - a.topPct || b.total - a.total,
     total: (a, b) => b.total - a.total || b.pts - a.pts,
     delta: (a, b) => (b.delta ?? -1e9) - (a.delta ?? -1e9) || b.pts - a.pts || b.fine - a.fine,
   };
   const isIntl = () => state.league === 'International';
   // US & Canada use the SharePoint level names; International uses the international sheet's own names.
-  const LV = () => isIntl() ? { top: 'Highly Involved', mid: 'Involved', entry: 'Connect' } : { top: 'Core', mid: 'Very Involved', entry: 'Involved' };
-  const catName = (k) => isIntl() ? ({ un: 'Not attending', vi: 'Highly Involved + Involved', co: 'Highly Involved' }[k.key] || k.label) : k.label;
-  const short = (k) => isIntl() ? ({ un: 'Not attending', vi: 'Involved or higher', co: 'Highly Involved' }[k.key]) : ({ nm: 'New', un: 'Uninvolved', vi: 'Very Involved', co: 'Core' }[k.key]);
+  const LV = () => isIntl() ? { top: 'Members + Highly Involved', mid: 'Involved', entry: 'Connect' } : { top: 'Core', mid: 'Very Involved', entry: 'Involved' };
+  const catName = (k) => isIntl() ? ({ mh: 'Members + Highly Involved', ic: 'Involved + Connect (share at Involved)' }[k.key] || k.label) : k.label;
+  const short = (k) => isIntl() ? ({ mh: 'Members + Highly Involved', ic: 'Involved + Connect' }[k.key]) : ({ nm: 'New', un: 'Uninvolved', vi: 'Very Involved', co: 'Core' }[k.key]);
   const mlabel = (r) => ({ score: `of ${r.max}`, top: LV().top.toLowerCase(), total: 'members', delta: 'pts vs last' })[state.metric];
   const pctf = (v) => Math.round(v) + '%';
-  const plural = (n) => n + (n === 1 ? ' pt' : ' pts');
-  const barMeta = (r) => `<span class="pts">${isIntl() ? '' : `<span>${fmt(r.total)} members</span>`}${r.cats.map((k) => `<span>${short(k)} <b>${k.pts}</b></span>`).join('')}</span>`;
+  const p1 = (n) => Number(n).toFixed(1);
+  const plural = (n) => p1(n) + ' pts';
+  const barMeta = (r) => `<span class="pts">${isIntl() ? '' : `<span>${fmt(r.total)} members</span>`}${r.cats.map((k) => `<span>${short(k)} <b>${p1(k.pts)}</b></span>`).join('')}</span>`;
   const barLabel = (r) => r.cats.map((k) => `${catName(k)} ${pctf(k.pct)}, ${plural(k.pts)}`).join('; ');
   function metricVal(r) {
     if (state.metric === 'total') return fmt(r.total);
     if (state.metric === 'top') return Math.round(r.topPct) + '%';
     if (state.metric === 'delta') return r.delta == null ? '—' : (r.delta > 0 ? '+' : '') + r.delta;
-    return String(r.pts);
+    return p1(r.pts);
   }
   function rankLabel(r, i, list) {
     if (state.metric !== 'score') return String(i + 1);
-    const rank = 1 + list.filter((x) => x.pts > r.pts).length;
+    const rank = 1 + list.filter((x) => x.pts > r.pts || (x.pts === r.pts && x.total > r.total)).length;
     return String(rank);
   }
   function deltaHtml(r) {
@@ -415,7 +428,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   function detail(r) {
     const cells = (isIntl() ? [] : [[fmt(r.total), 'total membership']]).concat(r.cats.map((k) => [pctf(k.pct), `${catName(k).toLowerCase()} · ${plural(k.pts)}`]));
     return `<div class="detail">${cells.map(([n, l]) => `<div><b class="num">${n}</b><span>${l}</span></div>`).join('')}
-      <div><b class="num">${r.pts} / ${r.max}</b><span>involvement score</span></div>
+      <div><b class="num">${p1(r.pts)} / ${r.max}</b><span>involvement score</span></div>
       <p class="note">${esc(r.league)} · ${esc(r.hub)}</p></div>`;
   }
 
@@ -431,10 +444,10 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   function drawVs(list) {
     const A = list.find((r) => r.id === $('vsA').value), B = list.find((r) => r.id === $('vsB').value);
     if (!A || !B) return;
-    const cats = [['Involvement score', (r) => r.pts, (v, r) => `${v} / ${r.max}`, 'high']]
+    const cats = [['Involvement score', (r) => r.pts, (v, r) => `${p1(v)} / ${r.max}`, 'high']]
       .concat(A.cats.map((k) => [catName(k), (r) => (r.cats.find((x) => x.key === k.key) || {}).pct ?? 0, (v) => pctf(v), k.better]));
     let wa = 0, wb = 0;
-    const side = (R, O, isA) => `<div class="bignum num">${R.pts}<small style="font-size:24px"> / ${R.max}</small></div><dl>${cats.map(([k, f, show, better]) => {
+    const side = (R, O, isA) => `<div class="bignum num">${p1(R.pts)}<small style="font-size:24px"> / ${R.max}</small></div><dl>${cats.map(([k, f, show, better]) => {
       const win = better === 'low' ? f(R) < f(O) : f(R) > f(O); if (win) isA ? wa++ : wb++;
       return `<dt>${k}</dt><dd class="num${win ? ' win' : ''}">${show(f(R), R)}</dd>`; }).join('')}</dl>`;
     $('vsAbody').innerHTML = side(A, B, true);
