@@ -1,0 +1,45 @@
+name: Daily refresh
+
+on:
+  schedule:
+    - cron: '17 12 * * *'   # every morning, about 7-8am New York time (GitHub can start it a little late)
+  workflow_dispatch:         # adds a "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Pull the latest numbers
+        env:
+          GAME_CARD_URL: ${{ secrets.GAME_CARD_URL }}
+        run: |
+          npm install --no-save --no-audit --no-fund xlsx@0.18.5
+          node scripts/refresh.cjs
+
+      - name: Save the new numbers
+        run: |
+          git config user.name "member-mile-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data-*.json latest.json
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "Daily refresh $(TZ=America/New_York date +%F)"
+          git push
+
+      - name: Republish the site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || echo "Pages will rebuild on its own"
