@@ -347,7 +347,7 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   const pctf = (v) => Math.round(v) + '%';
   const p1 = (n) => String(Math.round(n));
   const plural = (n) => n + (n === 1 ? ' pt' : ' pts');
-  const barMeta = (r) => `<span class="pts">${isIntl() ? '' : `<span>${fmt(r.total)} members</span>`}${r.cats.map((k) => `<span>${short(k)} <b>${p1(k.pts)}</b></span>`).join('')}</span>`;
+  const barMeta = (r) => `<span class="pts"><span>${fmt(r.total)} members</span>${r.cats.map((k) => `<span>${short(k)} <b>${p1(k.pts)}</b></span>`).join('')}</span>`;
   const barLabel = (r) => r.cats.map((k) => `${catName(k)} ${pctf(k.pct)}, ${plural(k.pts)}`).join('; ');
   function metricVal(r) {
     if (state.metric === 'total') return fmt(r.total);
@@ -380,8 +380,6 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     if (!latest) return;
     const lv = LV(); $('lgTop').textContent = lv.top; $('lgMid').textContent = lv.mid; $('lgEntry').textContent = lv.entry;
     const mt = $('metric'); mt.querySelector('[value=top]').textContent = lv.top + ' share';
-    const tot = mt.querySelector('[value=total]'); tot.hidden = tot.disabled = isIntl();
-    if (isIntl() && state.metric === 'total') { state.metric = 'score'; mt.value = 'score'; }
     $('howNA').hidden = isIntl(); $('howIntl').hidden = !isIntl();
     if (state.metric === 'delta') { state.metric = 'score'; mt.value = 'score'; }
     $('empty').hidden = true;
