@@ -114,8 +114,13 @@ function readJSON(p) { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } ca
     notes.push(`US & Canada from ${src.from}`);
   } catch (e) {
     na = (prevData?.rows || []).filter((r) => r[0] === 'NA');
-    missing = ['North America'];
-    notes.push(`US & Canada not refreshed (${e.message}); reusing the previous numbers`);
+    if (prevData?.date === today && !prevData.missing?.length) {
+      // US & Canada were already refreshed today (by the Mac task), so keep them and don't flag them as pending.
+      notes.push('US & Canada already updated today; kept those numbers');
+    } else {
+      missing = ['North America'];
+      notes.push(`US & Canada not refreshed (${e.message}); reusing the previous numbers`);
+    }
   }
 
   const data = { date: today, updated, rows: [...intl, ...na] };
