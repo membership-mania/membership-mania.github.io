@@ -96,19 +96,6 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
 .delta{font-size:13px;font-weight:700;text-align:right}
 .delta.up{color:var(--up)} .delta.down{color:var(--down)} .delta.flat{color:var(--ink-muted)}
 .detail{background:var(--surface);border:2px solid var(--surface-tint);border-top:0;padding:16px;margin-top:-6px;display:grid;gap:14px}
-.dscore{background:var(--action);color:var(--on-action);padding:16px 18px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 28px;align-items:center}
-.dtotal b{display:block;font-family:var(--font-display);font-stretch:75%;font-weight:900;font-size:56px;line-height:.9}
-.dtotal b small{font-size:26px;color:var(--band-muted)}
-.dtotal span{display:block;font-size:12.5px;line-height:1.3;color:var(--band-muted);margin-top:6px}
-.stack,.stacklbl{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:6px}
-.stack div{height:14px;background:rgba(255,255,255,.22);overflow:hidden}
-.stack div i{display:block;height:100%;background:var(--sunrise);transform-origin:left;animation:grow .6s ease-out backwards}
-@keyframes grow{from{transform:scaleX(0)}}
-@media (prefers-reduced-motion:reduce){.stack div i{animation:none}}
-.stacklbl{margin-top:8px;font-size:12.5px;line-height:1.3;color:var(--band-muted)}
-.stacklbl b{color:var(--on-action);font-size:14px}
-.dmeta{margin:0;font-size:13px;line-height:1.3;color:var(--ink-muted)}
-@media (max-width:560px){.dscore{grid-template-columns:1fr}}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
 .pcard{background:var(--surface-tint);padding:12px;display:grid;gap:8px;align-content:start}
 .ptop{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;font-weight:600;line-height:1.3}
@@ -448,19 +435,12 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
     return k.better === 'high' ? `Next point at ${v}%` : `Next point at ${v}% or lower`;
   }
   function detail(r) {
-    const n = r.cats.length;
-    const score = `<div class="dscore" style="--n:${n}">
-        <div class="dtotal"><b class="num">${r.pts}<small> / ${r.max}</small></b><span>involvement score</span></div>
-        <div><div class="stack">${r.cats.map((k) => `<div><i style="width:${k.pts * 10}%"></i></div>`).join('')}</div>
-          <div class="stacklbl">${r.cats.map((k) => `<span>${esc(short(k))} <b class="num">${k.pts}</b></span>`).join('')}</div></div>
-      </div>`;
-    const meta = (isIntl() ? '' : `${fmt(r.total)} members · `) + `${esc(r.league)} · ${esc(r.hub)}`;
     const cards = r.cats.map((k) => `<div class="pcard">
         <div class="ptop"><span>${esc(catName(k))}</span><span class="pval num">${pctf(k.pct)}</span></div>
         <div class="meter${k.pts >= 10 ? ' full' : ''}" role="img" aria-label="${k.pts} of 10 points">${Array.from({ length: 10 }, (_, n) => `<i${n < k.pts ? ` class="on" style="--i:${n}"` : ''}></i>`).join('')}</div>
         <div class="pfoot"><span><b class="num">${k.pts}</b> / 10 pts</span><span>${nextPoint(k)}</span></div>
       </div>`).join('');
-    return `<div class="detail">${score}<div class="pgrid">${cards}</div><p class="dmeta">${meta}</p></div>`;
+    return `<div class="detail"><div class="pgrid">${cards}</div></div>`;
   }
 
   function renderVs(list) {
