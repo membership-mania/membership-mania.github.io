@@ -216,8 +216,8 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
           <thead><tr><th>Category</th><th>4 points</th><th>3 points</th><th>2 points</th><th>1 point</th></tr></thead>
           <tbody>
             <tr><th>Not attending</th><td>Less than 24.99%</td><td>25&ndash;34.99%</td><td>35&ndash;49.99%</td><td>More than 50%</td></tr>
-            <tr><th>Highly Involved + Involved</th><td>More than 65.01%</td><td>55.01&ndash;65%</td><td>45.01&ndash;55%</td><td>Less than 45%</td></tr>
             <tr><th>Highly Involved</th><td>More than 20.01%</td><td>15.01&ndash;20%</td><td>10.01&ndash;15%</td><td>Less than 10%</td></tr>
+            <tr><th>Highly Involved + Involved</th><td>More than 65.01%</td><td>55.01&ndash;65%</td><td>45.01&ndash;55%</td><td>Less than 45%</td></tr>
           </tbody>
         </table></div>
         <p>Not attending is everyone in the region's total who isn't Highly Involved, Involved or Connect.</p>
@@ -413,11 +413,10 @@ section > header p{margin:0;color:var(--ink-muted);max-width:52ch;font-size:15px
   }
 
   function detail(r) {
-    const change = !isIntl() && r.prevTotal != null ? ` · ${r.total - r.prevTotal >= 0 ? '+' : ''}${r.total - r.prevTotal} members since last refresh` : '';
     const cells = (isIntl() ? [] : [[fmt(r.total), 'total membership']]).concat(r.cats.map((k) => [pctf(k.pct), `${catName(k).toLowerCase()} · ${plural(k.pts)}`]));
     return `<div class="detail">${cells.map(([n, l]) => `<div><b class="num">${n}</b><span>${l}</span></div>`).join('')}
       <div><b class="num">${r.pts} / ${r.max}</b><span>involvement score</span></div>
-      <p class="note">${esc(r.league)} · ${esc(r.hub)}${change}</p></div>`;
+      <p class="note">${esc(r.league)} · ${esc(r.hub)}</p></div>`;
   }
 
   function renderVs(list) {
